@@ -19,7 +19,7 @@ from map_gen import CLEARANCE, extract_nav_map, floor_heights, open_scene, set_c
 
 OUT = "/speed-scratch/al_oman/diffusion/socialnav_map_gen"
 SCENE_ROOT = "/speed-scratch/al_oman/VLA/matterport/data/scene_datasets"
-EPISODES_ROOT = "/speed-scratch/al_oman/diffusion/socialnav_map_gen/data"  # <- set to your json.gz root
+EPISODES_ROOT = "/speed-scratch/al_oman/VLA/matterport/data/datasets/pointnav"  # <- set to your json.gz root
 
 
 def subdir_for(path):  # map a scene path -> output subfolder
