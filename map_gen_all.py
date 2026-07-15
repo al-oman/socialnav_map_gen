@@ -49,7 +49,7 @@ for p in scenes:
         print("skip", name)
         continue
     try:
-        floors = floor_heights(episode_files[0])
+        floors = floor_heights(episode_files)  # merged across splits
         sim = open_scene(p)
         for profile, clearance in CLEARANCE.items():
             set_clearance(sim, clearance)

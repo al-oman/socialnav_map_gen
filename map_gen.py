@@ -19,12 +19,17 @@ import habitat_sim
 import numpy as np
 
 
-def floor_heights(episode_file, tol=0.5):
-    """Distinct floor heights (m) among the episodes' start positions.
+def floor_heights(episode_files, tol=0.5):
+    """Distinct floor heights (m) among the episodes' start positions, across
+    one or more episode files (e.g. train + val splits of the same scene).
     Heights within `tol` of each other are the same floor."""
-    with gzip.open(episode_file, "rt") as f:
-        episodes = json.load(f)["episodes"]
-    heights = sorted(e["start_position"][1] for e in episodes)
+    if isinstance(episode_files, str):
+        episode_files = [episode_files]
+    heights = []
+    for path in episode_files:
+        with gzip.open(path, "rt") as f:
+            heights += [e["start_position"][1] for e in json.load(f)["episodes"]]
+    heights = sorted(heights)
     floors = [[heights[0]]]
     for h in heights[1:]:
         if h - floors[-1][-1] > tol:
