@@ -73,12 +73,25 @@ def extract_nav_map(sim, height, mpp=0.05):
 
 
 if __name__ == "__main__":
-    scene = "/speed-scratch/al_oman/VLA/matterport/data/scene_datasets/mp3d/D7N2EKCX4Sj/D7N2EKCX4Sj.glb"
+    # Single-scene run: python map_gen.py [scene.glb] [episodes_root]
+    import glob
+    import os
+    import sys
+
+    scene = sys.argv[1] if len(sys.argv) > 1 else \
+        "/speed-scratch/al_oman/VLA/matterport/data/scene_datasets/mp3d/D7N2EKCX4Sj/D7N2EKCX4Sj.glb"
+    episodes_root = sys.argv[2] if len(sys.argv) > 2 else \
+        "/speed-scratch/al_oman/diffusion/socialnav_map_gen/pointnav"
     dataset_cfg = "/speed-scratch/al_oman/VLA/matterport/data/scene_datasets/mp3d/mp3d.scene_dataset_config.json"
-    episode_file = "data/D7N2EKCX4Sj.json.gz"  # per-scene episodes
+
+    name = os.path.basename(scene).split(".")[0]
+    episode_files = glob.glob(f"{episodes_root}/**/*{name}*.json.gz", recursive=True)
+    if not episode_files:
+        sys.exit(f"no episode files matching '{name}' under {episodes_root}")
+    print(f"found {len(episode_files)} episode file(s) for {name}")
 
     sim = open_scene(scene, dataset_cfg)
-    floors = floor_heights(episode_file)
+    floors = floor_heights(episode_files)
     for profile, clearance in CLEARANCE.items():
         set_clearance(sim, clearance)
         for i, (height, n_eps) in enumerate(floors):
